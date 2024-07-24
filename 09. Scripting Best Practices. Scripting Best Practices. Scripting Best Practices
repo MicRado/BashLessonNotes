@@ -1,0 +1,95 @@
+Error Handling:
+Using exit codes and trap for catching errors.
+Debugging:
+Using set -x for debugging scripts.
+Script Optimization:
+Tips for writing efficient and maintainable scripts
+
+Always Use Double Quotes: Double-quote variables to prevent word splitting and globbing.
+FILE="my file.txt"
+echo "$FILE"
+
+Use Meaningful Variable Names: Choose clear and descriptive names for variables to make your script easier to understand.
+user_name="JohnDoe"
+
+Check for Errors: Use set -e to exit the script when a command fails, and set -u to treat unset variables as an error.
+set -e
+set -u
+
+Use Functions: Break your script into functions to make it modular and reusable.
+greet_user() {
+    echo "Hello, $1!"
+}
+greet_user "Alice"
+
+Use $(...) for Command Substitution: It’s more readable and nestable than backticks.
+current_date=$(date)
+
+Avoid Using eval: It can be dangerous and lead to security vulnerabilities.
+Use ShellCheck: This is a static analysis tool that helps you find bugs in your scripts.
+shellcheck myscript.sh
+
+Sanitize Inputs: Always validate and sanitize inputs to avoid security issues.
+if [[ "$input" =~ ^[a-zA-Z0-9_]+$ ]]; then
+    echo "Valid input"
+else
+    echo "Invalid input"
+fi
+
+Use printf Instead of echo: printf is more powerful and consistent.
+printf "Hello, %s!\n" "$user_name"
+
+Comment Your Code: Add comments to explain complex parts of your script.
+# This function greets the user
+greet_user() {
+    echo "Hello, $1!"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

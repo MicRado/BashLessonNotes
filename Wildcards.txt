@@ -1,0 +1,69 @@
+
+File Name Expansion (Globbing):
+
+Wildcards can be used to match filenames. This is known as "globbing".
+Example:
+# List all files ending in .txt
+ls *.txt
+********************************************************************
+Case Statements:
+
+Wildcards can be used in 'case' statements to match patterns.
+Example:
+case $variable in
+    *.txt) echo "This is a text file" ;;
+    *.jpg) echo "This is a JPEG image" ;;
+    *) echo "Unknown file type" ;;
+esac
+********************************************************************
+Where Wildcards Don't Work Inline
+Note - "inline" refers to using wildcards directly within a single line of a command or expression, especially within conditional statements or string manipulations, rather than using a separate, more explicit structure like a case statement or an external tool.
+
+String Comparison
+When you are trying to use wildcards for inline string comparisons or within variable manipulations, Bash does not natively support this. For example:
+
+Inline Wildcard Matching:
+string="hello.txt"
+
+if [[ "$string" == "*.txt" ]]; then
+    echo "This is a text file"
+else
+    echo "This is not a text file"
+fi
+This won't work as expected because the == operator doesn't interpret the * as a wildcard.
+********************************************************************
+Workarounds for Inline Matching
+Using case for Pattern Matching
+You can use a case statement for pattern matching instead of inline conditionals:
+
+string="hello.txt"
+
+case "$string" in
+    *.txt)
+        echo "This is a text file"
+        ;;
+    *)
+        echo "This is not a text file"
+        ;;
+esac
+********************************************************************
+Using grep or [[ ]] with Pattern Matching
+You can also use grep or extended pattern matching with [[ ]] to achieve similar results:
+
+string="hello.txt"
+
+# Using grep
+if echo "$string" | grep -q '\.txt$'; then
+    echo "This is a text file"
+else
+    echo "This is not a text file"
+fi
+
+# Using extended pattern matching
+shopt -s extglob
+if [[ "$string" == *.txt ]]; then
+    echo "This is a text file"
+else
+    echo "This is not a text file"
+fi
+shopt -u extglob

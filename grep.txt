@@ -1,0 +1,22 @@
+grep 'search_term' file.txt
+the -E flag for regular expressions without surrounding the search term
+case-insensitive, you can use the -i flag:
+
+man grep
+grep  searches  for  PATTERNS in each FILE.  PATTERNS is one or more patterns separated by newline characters, and grep prints each line that matches a pattern.  Typically PATTERNS should be quoted when
+       grep is used in a shell command.
+
+
+-i, --ignore-case
+              Ignore case distinctions in patterns and input data, so that characters that differ only in case match each other.
+ -E, --extended-regexp
+              Interpret PATTERNS as extended regular expressions
+-c, --count
+              Suppress normal output; instead print a count of matching lines for each input file.  With the -v, --invert-match option (see above), count non-matching lines.
+-L, --files-without-match
+              Suppress normal output; instead print the name of each input file from which no output would normally have been printed.
+-l, --files-with-matches  
+              Suppress normal output; instead print the name of each input file from which output would normally have been printed.  Scanning each input file stops upon first match.
+f FILE, --file=FILE
+              Obtain patterns from FILE, one per line.  If this option is used multiple times or is combined with the -e (--regexp) option, search  for  all  patterns  given.   The  empty  file  contains  zero
+              patterns, and therefore matches nothing.  If FILE is - , read patterns from standard input.

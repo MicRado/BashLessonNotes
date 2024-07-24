@@ -1,0 +1,35 @@
+The Bash Shell (or the Bourne Again Shell) is a UNIX shell and command language. It was written by Brain Fox for the GNU Project as a free software replacement for the Bourne Shell (sh).
+Something you should not get confused about is that Bash is also a programming language. So it's a "Shell", but you can also program behaviour in Bash.
+With command-line editing, it’s much easier to go back and fix mistakes or modify previous commands than it is with the C shell’s history mechanism.
+
+The other major bash feature that is intended mostly for interactive users is job control. 
+Job control gives you the ability to stop, start, and pause any number of commands at the same time. This feature was borrowed almost verbatim from the C shell.
+
+As a command processor, Bash supports the execution of commands from files, known as shell scripts, facilitating automation.
+Its syntax simplifies I/O redirection. For example, it can redirect standard output (stdout) and standard error (stderr) at the same time using the &> operator.
+
+Key points about Bash
+  - Most users use Bash, since it is the default shell environment on most systems
+  - Bash does not have an inline wildcard expression. A wildcard expression is when you would want to search for patterns in your Shell, similar to Regex. 
+      Common wildcards include:
+        *: Matches zero or more characters.
+        ?: Matches exactly one character.
+        [abc]: Matches any one of the enclosed characters (a, b, or c in this case).
+        [a-z]: Matches any character in the specified range (a through z in this case).
+  - You can't automatically change the directory name
+  - # is treated as a comment in scripting
+  - It has shopt settings
+  - Prompt has backslash escapes
+  - User configuration settings are in .bashrc
+
+The Z Shell
+The Z Shell, or Zsh is also a UNIX shell that is very similar to Bash. You can also script and use the shell as a command interpreter.
+
+Zsh is an extension of the Bourne shell with a lot of improvements. Zsh was released in 1990 by Paul Falstad, and it has some features that Bash, Korn Shell, and C Shell share.
+macOS by default uses the Zsh Shell.
+
+Key points about Zsh
+  - Comes with autocompletion when using the terminal. So when you press Tab ↹ in order to autocomplete whatever command you want to run, not only does it autocomplete for        you but will bring down a drop-down of all the other possible files and directories
+  - Supports inline wildcard expressions
+  - Much more configurable than Bash
+  - Supports plugins and themes. Here's a list of plugins available for Zsh.

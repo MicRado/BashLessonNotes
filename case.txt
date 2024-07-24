@@ -1,0 +1,24 @@
+The syntax of the case command is:
+
+case word in
+    [ [(] pattern [| pattern]…) command-list ;;]…
+esac
+
+case will selectively execute the command-list corresponding to the first pattern that matches word. 
+The ‘|’ is used to separate multiple patterns, and the ')' operator terminates a pattern list. A list of patterns and an associated command-list is known as a clause.
+
+Each clause must be terminated with ';;', ';&', or ';;&'. The word undergoes tilde expansion, parameter expansion, command substitution, arithmetic expansion, and quote removal before matching is attempted.
+There may be an arbitrary number of case clauses, each terminated by a ';;', ';&', or ';;&'. The first pattern that matches determines the command-list that is executed. It's a common idiom to use '*' as the final pattern to define the default case, since that pattern will always match.
+
+- esac denotes the end of a case statement in some computer languages, such as in Linux or Unix shell scripts.
+
+example
+echo -n "Enter the name of an animal: "
+read ANIMAL
+echo -n "The $ANIMAL has "
+case $ANIMAL in
+  horse | dog | cat) echo -n "four";;
+  man | kangaroo ) echo -n "two";;
+  *) echo -n "an unknown number of";;
+esac
+echo " legs."

@@ -1,0 +1,86 @@
+Defining and Using Functions:
+A Bash function is essentially a set of commands that can be called numerous times. The purpose of a function is to help you make your bash scripts more readable and to avoid writing the same code repeatedly. Compared to most programming languages, Bash functions are somewhat limited.
+
+BASIC SYNTAX:
+        function_name() {
+            commands
+        }
+ALTERNATIVELY:
+        function function_name {
+            commands
+        }
+******************************************************************************************************************************************************************************
+Few points to be noted:
+
+- The commands between the curly braces ({}) are called the body of the function. The curly braces must be separated from the body by spaces or newlines.
+- Defining a function doesn’t execute it. To invoke a bash function, simply use the function name. Commands between the curly braces are executed whenever the function is called 
+  in the shell script.
+- The function definition must be placed before any calls to the function.
+- When using single line “compacted” functions, a semicolon ; must follow the last command in the function.
+- Always try to keep your function names descriptive.
+
+Variables Scope
+Global variables are variables that can be accessed from anywhere in the script regardless of the scope. In Bash, all variables by default are defined as global, even if declared inside the function.
+
+Local variables 
+Local variables can be declared within the function body with the local keyword and can be used only inside that function. You can have local variables with the same name in different functions.
+******************************************************************************************************************************************************************************
+EXAMPLE:
+#!/bin/bash
+
+var1='A'
+var2='B'
+
+my_function () {
+  local var1='C'
+  var2='D'
+  echo "Inside function: var1: $var1, var2: $var2"
+}
+echo "Before executing function: var1: $var1, var2: $var2"
+my_function
+echo "After executing function: var1: $var1, var2: $var2"
+
+OUTPUT:
+Before executing function: var1: A, var2: B
+Inside function: var1: C, var2: D
+After executing function: var1: A, var2: D
+******************************************************************************************************************************************************************************
+Passing Arguments to Bash Functions
+
+To pass any number of arguments to the bash function simply put them right after the function’s name, separated by a space. It is a good practice to double-quote the arguments to avoid the misparsing of an argument with spaces in it.
+
+- The passed parameters are $1, $2, $3 … $n, corresponding to the position of the parameter after the function’s name.
+- The $0 variable is reserved for the function’s name.
+- The $# variable holds the number of positional parameters/arguments passed to the function.
+- The $* and $@ variables hold all positional parameters/arguments passed to the function.
+  - When double-quoted, "$*" expands to a single string separated by space (the first character of IFS) - "$1 $2 $n".
+  - When double-quoted, "$@" expands to separate strings - "$1" "$2" "$n".
+  - When not double-quoted, $* and $@ are the same.
+
+EXAMPLE:
+#!/bin/bash
+# Define a function with multiple parameters
+add_numbers() {
+    local num1=$1
+    local num2=$2
+    local sum=$((num1 + num2))
+    echo "The sum of $num1 and $num2 is: $sum"
+}
+# Call the function with different arguments
+add_numbers 3 5
+add_numbers 10 20
+add_numbers 100 200
+
+- The function add_numbers takes two parameters: num1 and num2.
+- It calculates the sum of these two numbers and stores the result in the variable sum.
+- The local keyword is used to make the variables num1, num2, and sum local to the function.
+- The function is called with different pairs of numbers.
+
+OUTPUT:
+The sum of 3 and 5 is: 8
+The sum of 10 and 20 is: 30
+The sum of 100 and 200 is: 300
+******************************************************************************************************************************************************************************
+
+Reference
+https://linuxize.com/post/bash-functions/

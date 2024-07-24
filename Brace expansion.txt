@@ -1,0 +1,26 @@
+Brace expansion, also called alternation, is a feature copied from the C shell. It generates a set of alternative combinations. 
+Generated results need not exist as files. The results of each expanded string are not sorted and left to right order is preserved
+
+  $ echo a{p,c,d,b}e
+  ape ace ade abe
+  $ echo {a,b,c}{d,e,f}
+  ad ae af bd be bf cd ce cf
+
+  $ ls *.{jpg,jpeg,png}
+
+Brace expansion can be used for sequential ranges between two integers or characters separated by double dots. 
+Allowing a third integer to specify the increment.
+  
+  $echo {1..100..5}
+  1 6 11 16 21 26 31 36 41 46 51 56 61 66 71 76 81 86 91 96
+  $ echo {1..100..3}
+  1 4 7 10 13 16 19 22 25 28 31 34 37 40 43 46 49 52 55 58 61 64 67 70 73 76 79 82 85 88 91 94 97 100
+
+When brace expansion is combined with variable expansion (A.K.A. parameter expansion and parameter substitution) the variable expansion is performed after the brace expansion. 
+Which in some cases may necessitate the use of the eval built-in, thus:
+
+  $ start=1; end=10
+  $ echo {$start..$end} # fails to expand due to the evaluation order
+  {1..10}
+  $ eval echo {$start..$end} # variable expansion occurs then resulting string is evaluated
+  1 2 3 4 5 6 7 8 9 10

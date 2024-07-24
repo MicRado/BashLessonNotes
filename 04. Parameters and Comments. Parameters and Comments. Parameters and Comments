@@ -1,0 +1,134 @@
+*****************************************************************************************************************************************************************************
+Parameters 
+*****************************************************************************************************************************************************************************
+A parameter is an entity that stores values. It can be a name, a number, or one of the special characters (listed in the link at the bottom.) 
+A variable is a parameter denoted by a name. 
+A variable has a value and zero or more attributes. 
+Attributes are assigned using the declare builtin command (listed in the link at the bottom.) 
+
+A parameter is set if it has been assigned a value. The null string is a valid value. Once a variable is set, it may be unset only by using the unset builtin command.
+
+Variable Types
+    Although Bash is not a typed language, it does have a few different types of variables. These types define the kind of content they are allowed to have. Type information       is stored internally by Bash.
+    Array: declare -a variable: The variable is an array of strings.
+    Associative array: declare -A variable: The variable is an associative array of strings (bash 4.0 or higher).
+    Integer: declare -i variable: The variable holds an integer. Assigning values to this variable automatically triggers Arithmetic Evaluation.
+    Read Only: declare -r variable: The variable can no longer be modified or unset.
+    Export: declare -x variable: The variable is marked for export which means it will be inherited by any child process.
+
+Defining variables (variable=value).
+    In bash, variables are defined without any spaces around the equal sign (=). Here's the basic syntax:
+    variable_name=value
+
+Accessing variables ($variable).
+    To access the value of a variable, prefix the variable name with a dollar sign ($):
+    echo $variable_name
+
+Example of Defining and Accessing Variables
+    #!/bin/bash
+    
+# Define variables
+    greeting="Hello"
+    name="World"
+    year=$(date +%Y) # Command substitution to get the current year
+
+# Access variables
+    echo "$greeting, $name!"  # Output: Hello, World!
+    echo "The current year is $year."  # Output: The current year is 2024.
+
+EXAMPLE 2 
+The purpose of the script is to collect and save the content of various user-specific configuration and history files from a Linux system for users with a UID greater than or equal to 1000. 
+
+#!/bin/bash
+
+# Get a list of users with UID equal to or greater than 1000. This generally includes all regular users on the system, excluding system and service accounts.
+users=$(getent passwd | awk -F: '$3 >= 1000 && $1 != "nobody" { print $1 }')
+
+# For each identified user, the script:
+# Checks if the user's home directory exists.
+# Attempts to read the content of several important files located in the user's home directory, including:
+# .bash_history: Contains the user's command history for Bash shell sessions.
+# .bash_logout: Contains commands that are executed when the user logs out of a Bash session.
+# .bashrc: Contains commands that are executed when a new Bash session is started.
+# .profile: Contains initialization commands for the user’s shell.
+# .python_history: Contains Python interactive shell history.
+# .zsh_history: Contains the user’s command history for Zsh shell sessions (if using Zsh).
+# .zshrc: Contains commands executed for each new Zsh shell session (if using Zsh).
+
+for user in $users
+do
+    # Read user-specific files and handle any potential errors
+    GetBashHistory=$(cat "/home/$user/.bash_history" 2>/dev/null)
+    GetBashLog=$(cat "/home/$user/.bash_logout" 2>/dev/null)
+    GetBashRc=$(cat "/home/$user/.bashrc" 2>/dev/null)
+    GetProfile=$(cat "/home/$user/.profile" 2>/dev/null)
+    GetPythonHistory=$(cat "/home/$user/.python_history" 2>/dev/null)
+    GetZshHistory=$(cat "/home/$user/.zsh_history" 2>/dev/null)
+    Getzshrc=$(cat "/home/$user/.zshrc" 2>/dev/null)
+
+    # Write the gathered information to a file
+    {
+        echo "Bash History:"
+        echo "$GetBashHistory"
+        echo
+        echo "Bash Logout:"
+        echo "$GetBashLog"
+        echo
+        echo "Bash RC:"
+        echo "$GetBashRc"
+        echo
+        echo "Profile:"
+        echo "$GetProfile"
+        echo
+        echo "Python History:"
+        echo "$GetPythonHistory"
+        echo
+        echo "Zsh History:"
+        echo "$GetZshHistory"
+        echo
+        echo "Zsh RC:"
+        echo "$Getzshrc"
+    } > "$user.CommandHistory.txt"
+    
+    echo "Results saved to $user.CommandHistory.txt"
+done
+
+
+*****************************************************************************************************************************************************************************
+Comments
+*****************************************************************************************************************************************************************************
+Single-line comments are used to annotate a single line of code. In bash, you use the # symbol to start a single-line comment.
+# This is a single-line comment
+
+Example
+#!/bin/bash
+# Define a variable
+name="Alice"  # This variable holds the user's name
+
+Multi-line comments using : <<'END' and END.
+Another way to simulate multi-line comments is by using a here document with : ' ... ' or << 'COMMENT' ... COMMENT. This approach is not a true comment but effectively ignores the enclosed text.
+
+EXAMPLE
+    : '
+    This is a multi-line comment.
+    It can span multiple lines.
+    '
+OR
+    #!/bin/bash
+    << 'COMMENT'
+    This is a multi-line comment.
+    It will not be executed or printed.
+    COMMENT
+
+    # Print a greeting
+    echo "Hello, World!"
+
+
+
+
+
+
+Special Parameters
+https://github.com/MicRado/Linux/blob/main/BashScripts/BashLessonNotes/04.1.%20Special%20Parameters
+Bash Builtin Commands
+https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html

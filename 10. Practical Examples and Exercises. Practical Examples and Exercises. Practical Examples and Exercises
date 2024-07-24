@@ -1,0 +1,26 @@
+Examples:
+
+A simple backup script.
+A script to automate system updates.
+A script to parse log files.
+#!/bin/bash
+
+# Simple backup script
+backup_dir="$HOME/backup"
+mkdir -p "$backup_dir"
+
+echo "Backing up home directory..."
+cp -r $HOME/* "$backup_dir"
+
+echo "Backup completed successfully!"
+***********************************************************************************************************************************************************************************
+
+Example Exercises:
+
+Create a Script: Write a script that checks if a file exists and prints a message.
+Loop Exercise: Write a script that lists all files in a directory and prints their names.
+Function Exercise: Write a script that defines a function to greet the user and call it with a username as an argument.
+
+
+Test scripts and fix example scripts.
+https://www.shellcheck.net/#

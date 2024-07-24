@@ -1,0 +1,7 @@
+Conditional execution
+Bash supplies "conditional execution" command separators that make execution of a command contingent on the exit code set by a precedent command. For example:
+
+cd "$SOMEWHERE" && ./do_something || echo "An error occurred" >&2
+Where ./do_something is only executed if the cd (change directory) command was "successful" (returned an exit status of zero) and the echo command would only be executed if either the cd or the ./do_something command return an "error" (non-zero exit status).
+
+For all commands the exit status is stored in the special variable $?. Bash also supports if ...;then ...;else ...;fi and case $VARIABLE in $pattern)...;;$other_pattern)...;; esac forms of conditional command evaluation.

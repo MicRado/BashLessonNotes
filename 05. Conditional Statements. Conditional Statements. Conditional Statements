@@ -1,0 +1,164 @@
+Bash conditionals let you write code that performs different tasks based on specified checks. These checks can be based on a simple assessment that results in a true or false result. Alternatively, a conditional may be in the form of a multiple case check where a number of values are assessed before an operation is performed.
+
+Bash can be a very loose and flexible language. Many concrete concepts you’d find in other programming languages are absent, and you have to use conventional design patterns to make Bash work the same way other programming languages do.
+
+Conditionals assess the exit status of a command. If you want Bash to mimic Boolean evaluations, you’ll need to use a specialized command. There are three ways you can test an expression in Bash:
+
+****************************************************************************************************************************************************************************
+if Statement
+****************************************************************************************************************************************************************************
+The if statement is used to execute a block of code if a specified condition is true.
+#!/bin/bash
+n=`ls -1 | wc -l` 
+if [ $n -lt 10 ]
+then 
+printf "There are less than ten files here \n" 
+fi
+
+The code here first assigns the number of files in the current directory to a variable (n). It then uses the test operator -lt to test if the number count is less than ten. If the test condition is true, the command ([ $n -lt 10 ]) will exit with a status of 0, returning an exit code of 0. Then it displays a message informing the user that there are less than ten files in this particular directory.
+
+****************************************************************************************************************************************************************************
+if-Else Statements:
+****************************************************************************************************************************************************************************
+The if-else statement allows you to execute one block of code if the condition is true and another block if the condition is false.
+#!/bin/bash
+n=`ls -1 | wc -l`
+if [ $n -lt 10 ]
+then
+printf "There are less than ten files here \n"
+else
+printf "There are more than ten files here \n";
+fi
+
+This time, the if-else informs the user that there are more than ten files instead of just exiting the script when it doesn’t meet the first condition.
+
+****************************************************************************************************************************************************************************
+if-elif-else Statement:
+****************************************************************************************************************************************************************************
+The if-elif-else statement allows you to check multiple conditions. If the first condition is false, it checks the next condition, and so on.
+#!/bin/bash
+n=`ls -1 | wc -l`
+if [ $n -lt 10 ]
+then
+printf "There are less than ten files here \n"
+elif [ $n -lt 15 ]
+then printf "There are less than fifteen files here \n";
+else
+printf "There are more than fifteen files here \n";
+fi
+
+elif is essentially a shorthand of an else-if statement that you may recognize from other fully formed programming languages. In the example above, you check if there are less than ten files. If there are more than ten files, your else-if conditional expression will check if there are less than fifteen files. If both conditions are not met—in this case, the directory has more than fifteen files—then the script will display a message indicating this.
+
+****************************************************************************************************************************************************************************
+Nested If Statement:
+****************************************************************************************************************************************************************************
+If you want to add more refinement to your if and elif conditionals, you can use a nested or embedded if statement. A nested if lets you perform an additional check after a condition is met by an if statement. 
+#!/bin/bash
+n=`ls -1 | wc -l`
+if [ $n -lt 10 ]
+then
+  printf "There are less than ten files here \n";
+  if [ $n -gt 5 ]
+  then
+    printf "There are more than five files here \n";
+  else
+  printf "There are less than five files here \n";
+  fi
+fi
+
+Here we have added a nested if to the previous example. To start, it checks if the current directory has less than ten files. If the command runs successfully, it performs another check to see if there are more than five files and then displays a message accordingly.
+
+****************************************************************************************************************************************************************************
+case Statement:
+****************************************************************************************************************************************************************************
+The case statement is used for multi-way branching based on pattern matching. It's useful when you have multiple conditions to check.They work similarly to if-elif-else statements, but when employed correctly, they can help produce cleaner code.
+#!/bin/bash
+
+n=`ls -1 | wc -l` 
+echo $n
+
+case $n in 
+0) printf "There are no files here \n";; 
+1) printf "There is one \n";;
+2) printf "There are two files here \n";; 
+3) printf "There are three files here \n";; 
+4) printf "There are four files here \n";; 
+5) printf "There are five files here \n";; 
+6) printf "There are six files here \n";; 
+7) printf "There are seven files here \n";; 
+8) printf "There are eight files here \n";; 
+9) printf "There are nine files here \n";; 
+10) printf "There are ten files here \n";; 
+*) printf "There are more than ten files here \n";; 
+esac
+
+This time, the example takes the file count and assesses it against twelve different patterns, which are all simple numbers. It displays a message with every pattern it suits. The pattern * acts as a catchall and will match if none of the other patterns match.
+
+****************************************************************************************************************************************************************************
+Compounding Comparison Operators
+****************************************************************************************************************************************************************************
+Compounding comparison operators allow you to combine test expressions. They return a value based on a test performed on multiple expressions:
+
+-a: is the and operator. It lets you test multiple conditions and returns true if all conditions are true (ie if [ $n -gt 10 -a $n -lt 15 ]).
+-o: is the or operator. It lets you test multiple conditions and returns true if one or more conditions are true (ie if [ $n -gt 10 -o $n -lt 15 ]).
+
+****************************************************************************************************************************************************************************
+Integer Comparison Operators
+****************************************************************************************************************************************************************************
+Integer comparison operators let you build expressions that compare whole numbers in Bash:
+
+-eq: tests if two values/variables are equal (= or ==)
+-ne: checks if two values/variables are not equal (!=)
+-gt: checks if one value is greater than another (>)
+-ge: checks if one value is greater than or equal to another (>=)
+-lt: checks if one value is less than another (<)
+-le: checks if one value is equal or less than another (<=)
+
+****************************************************************************************************************************************************************************
+String Evaluation Operators
+****************************************************************************************************************************************************************************
+String evaluation operators let you compare and evaluate strings of text in Bash:
+
+== or =: checks if two strings are equal
+!=: checks if two strings are not equal to each other
+<: checks if one string is less than another using the ASCII sorting order
+>: checks if one string is greater than another using the ASCII sorting order
+-z: returns true if the string is empty or null (has a length of zero)
+-n: returns true if a string is not null
+
+****************************************************************************************************************************************************************************
+File Evaluating Operators
+****************************************************************************************************************************************************************************
+These advanced operators let you assess and compare files in Bash:
+
+-e: validates the existence of a file (returns true if a file exists)
+-f: validates if the variable is a regular file (not a folder, directory, or device)
+-d: checks if the variable is a directory
+-h (or -L): validates if the variable is a file that is a symbolic link
+-b: checks if a variable is a block special file
+-c: verifies if a variable is a character special file
+-p: checks if a file is a pipe
+-S: checks if a file is a socket
+-s: verifies if the size of the file is above zero (returns true if the file is greater than 0 bytes)
+-t: validates if the file is associated with a terminal device
+-r: checks if the file has read permissions
+-w: verifies if the file has write permissions
+-x: checks if the file has execute permissions
+-g: checks if the SGID flag is set on a file
+-u: verifies if the SUID flag is set on a file
+-k: checks if the sticky bit is set on a file
+-O: verifies if you’re the owner of a file
+-G: validates if the group ID is the same as yours
+-N: validates if a file was modified since it was last read
+-nt: compares the creation dates of two files to see if one file (file 1) is newer than the other (file 2)
+-ot: compares the creation dates of two files to verify if one file (file 1) is older than the other (file 2)
+-ef: checks if two variables are hard links to the same file
+
+
+Square Brackets [ ]: Used for testing conditions. Always ensure you have spaces around the brackets and the condition.
+Double Square Brackets [[ ]]: Provide additional functionality and improved syntax compared to single brackets. They are more flexible but are not POSIX-compliant.
+-f: Checks if a file exists.
+-d: Checks if a directory exists.
+-z: Checks if a string is empty.
+-n: Checks if a string is not empty.
+= and !=: String comparison for equality and inequality.

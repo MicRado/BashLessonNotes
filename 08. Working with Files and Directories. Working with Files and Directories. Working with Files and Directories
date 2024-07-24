@@ -1,0 +1,5 @@
+File Operations:
+Reading from and writing to files.
+Using redirection (>, >>, <) and pipes (|).
+Directory Operations:
+Creating (mkdir), navigating, and removing directories (rmdir).
