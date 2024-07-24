@@ -1,5 +1,147 @@
+******************************************************************************************************************************************************************************
 File Operations:
-Reading from and writing to files.
-Using redirection (>, >>, <) and pipes (|).
+******************************************************************************************************************************************************************************
+Reading from and Writing to Files
+Reading from a file:
+      #!/bin/bash
+      # Reading the content of a file and storing it in a variable
+      file_content=$(cat myfile.txt)
+      echo "Content of myfile.txt:"
+      echo "$file_content"
+
+Writing to a file:
+      #!/bin/bash
+      # Writing text to a file (overwrites existing content)
+      echo "This is some text." > myfile.txt
+      
+      # Appending text to a file
+      echo "This is additional text." >> myfile.txt
+  
+******************************************************************************************************************************************************************************
+Using Redirection and Pipes:
+******************************************************************************************************************************************************************************
+>: Redirects output to a file (overwrites existing content).
+>>: Redirects output to a file (appends to existing content).
+<: Redirects input from a file.
+      #!/bin/bash
+      # Writing to a file using redirection
+      echo "This will overwrite the file." > myfile.txt
+      
+      # Appending to a file using redirection
+      echo "This will be added to the file." >> myfile.txt
+      
+      # Reading from a file using redirection
+      while read -r line; do
+          echo "Line: $line"
+      done < myfile.txt
+      
+Pipes:
+|: Takes the output of one command and uses it as input to another command.
+      #!/bin/bash
+      
+      # Using a pipe to filter and format the output of a command
+      ls -l | grep "^d" | awk '{print $9}'
+******************************************************************************************************************************************************************************
 Directory Operations:
-Creating (mkdir), navigating, and removing directories (rmdir).
+******************************************************************************************************************************************************************************
+Creating directories:   
+      #!/bin/bash
+      # Creating a single directory
+      mkdir my_directory
+      
+      # Creating nested directories
+      mkdir -p parent_directory/child_directory
+
+Navigating directories:
+      #!/bin/bash
+      # Navigating to a directory
+      cd my_directory
+      # Going up one directory level
+      cd ..
+      # Going to the home directory
+      cd ~
+
+Removing directories:
+      #!/bin/bash
+      # Removing an empty directory
+      rmdir empty_directory
+      # Removing a directory and its contents
+      rm -r directory_with_contents
+
+******************************************************************************************************************************************************************************
+Additional Useful Commands:
+******************************************************************************************************************************************************************************
+Listing files and directories:
+      #!/bin/bash
+      # Listing all files and directories
+      ls -l
+      # Listing all files, including hidden ones
+      ls -la
+
+Copying files and directories:
+      #!/bin/bash
+      # Copying a file
+      cp source_file.txt destination_file.txt
+      # Copying a directory and its contents
+      cp -r source_directory destination_directory
+
+Moving or renaming files and directories:
+      #!/bin/bash
+      # Moving a file
+      mv source_file.txt destination_directory/
+      # Renaming a file
+      mv old_name.txt new_name.txt
+
+******************************************************************************************************************************************************************************
+Putting It All Together:
+******************************************************************************************************************************************************************************
+Here's a script that combines file and directory operations along with redirection and pipes:
+
+      #!/bin/bash
+      # Define a directory and a file
+      directory="example_dir"
+      file="example_dir/example_file.txt"
+      
+      # Create the directory
+      mkdir -p "$directory"
+      
+      # Write to the file
+      echo "Hello, World!" > "$file"
+      
+      # Append to the file
+      echo "This is a new line." >> "$file"
+      
+      # Read the file
+      echo "Content of $file:"
+      cat "$file"
+      
+      # List files in the directory
+      echo "Listing files in $directory:"
+      ls -l "$directory"
+      
+      # Filter and format the output using a pipe
+      echo "Files containing 'new':"
+      grep "new" "$file" | awk '{print $0}'
+      
+      # Remove the directory and its contents
+      rm -r "$directory"
+      
+      echo "Script completed."
+
+******************************************************************************************************************************************************************************
+Summary
+File Operations:
+Reading: cat filename, while read -r line; do ... done < filename
+Writing: echo "text" > filename, echo "text" >> filename
+Redirection and Pipes:
+> (overwrite), >> (append), < (input redirection)
+| (pipe)
+Directory Operations:
+Creating: mkdir, mkdir -p
+Navigating: cd
+Removing: rmdir, rm -r
+Additional Commands:
+Listing: ls, ls -la
+Copying: cp, cp -r
+Moving/Renaming: mv
+
