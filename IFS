@@ -1,0 +1,90 @@
+The IFS is an acronym for Internal Field Separator or Input Field Separator. The $IFS is a special shell variable in Bash, ksh, sh, and POSIX. 
+
+- The IFS is a special shell variable.
+- You can change the value of IFS as per your requirments.
+- The Internal Field Separator (IFS) that is used for word splitting after expansion and to split lines into words with the read builtin command.
+
+From the bash man page:
+The shell treats each character of IFS as a delimiter, and splits the results of the other expansions into words on these characters. If IFS is unset, or its value is exactly <space><tab><newline>, the default, then sequences of <space>, <tab>, and <newline> at the beginning and end of the results of the previous expansions are ignored, and any sequence of IFS characters not at the beginning or end serves to delimit words. If IFS has a value other than the default, then sequences of the whitespace characters space and tab are ignored at the beginning and end of the word, as long as the whitespace character is in the value of IFS (an IFS whitespace character). Any character in IFS that is not IFS whitespace, along with any adjacent IFS whitespace characters, delimits a field. A sequence of IFS whitespace characters is also treated as a delimiter. If the value of IFS is null, no word splitting occurs.
+
+# DEFAULT VALUE:
+The default value is <space><tab><newline>. You can print it with the following command:
+
+cat -etv <<<"$IFS"
+You should see something as follows on your Linux terminal:
+# OUTPUT:
+ ^I$
+$
+
+# EXAMPLE
+list="one two three four"
+for word in $list; do
+    echo "Word: $word"
+done
+# OUTPUT:
+Word: one
+Word: two
+Word: three
+Word: four
+
+******************************************************************************************************************************************************************************
+Custom IFS
+******************************************************************************************************************************************************************************
+You can change the IFS value to split words differently. For example, you might have a CSV (comma-separated values) string and want to split it by commas:
+
+# EXAMPLE
+list="one,two,three,four"
+IFS=','
+
+for word in $list; do
+    echo "Word: $word"
+done
+# OUTPUT:
+Word: one
+Word: two
+Word: three
+Word: four
+
+******************************************************************************************************************************************************************************
+Restoring IFS
+******************************************************************************************************************************************************************************
+After modifying IFS, it's a good practice to restore it to its default value to avoid unexpected behavior in other parts of your script:
+
+# EXAMPLE
+
+# Backup original IFS
+original_ifs=$IFS
+
+# Set IFS to comma
+IFS=','
+
+list="one,two,three,four"
+for word in $list; do
+    echo "Word: $word"
+done
+
+# Restore original IFS
+IFS=$original_ifs
+
+Summary
+IFS (Internal Field Separator): Controls how Bash recognizes word boundaries.
+Default IFS: Space, tab, and newline.
+Custom IFS: Set IFS to a different character to change word splitting behavior.
+Usage in for loops and read command: Helps process and split strings based on specified delimiters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
