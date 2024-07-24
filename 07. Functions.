@@ -1,4 +1,6 @@
+******************************************************************************************************************************************************************************
 Defining and Using Functions:
+******************************************************************************************************************************************************************************
 A Bash function is essentially a set of commands that can be called numerous times. The purpose of a function is to help you make your bash scripts more readable and to avoid writing the same code repeatedly. Compared to most programming languages, Bash functions are somewhat limited.
 
 BASIC SYNTAX:
@@ -13,7 +15,8 @@ ALTERNATIVELY:
 Few points to be noted:
 
 - The commands between the curly braces ({}) are called the body of the function. The curly braces must be separated from the body by spaces or newlines.
-- Defining a function doesn’t execute it. To invoke a bash function, simply use the function name. Commands between the curly braces are executed whenever the function is called 
+- Defining a function doesn’t execute it. To invoke a bash function, simply use the function name. Commands between the curly braces are executed whenever the function is 
+  called 
   in the shell script.
 - The function definition must be placed before any calls to the function.
 - When using single line “compacted” functions, a semicolon ; must follow the last command in the function.
@@ -46,7 +49,7 @@ Inside function: var1: C, var2: D
 After executing function: var1: A, var2: D
 ******************************************************************************************************************************************************************************
 Passing Arguments to Bash Functions
-
+******************************************************************************************************************************************************************************
 To pass any number of arguments to the bash function simply put them right after the function’s name, separated by a space. It is a good practice to double-quote the arguments to avoid the misparsing of an argument with spaces in it.
 
 - The passed parameters are $1, $2, $3 … $n, corresponding to the position of the parameter after the function’s name.
@@ -57,7 +60,7 @@ To pass any number of arguments to the bash function simply put them right after
   - When double-quoted, "$@" expands to separate strings - "$1" "$2" "$n".
   - When not double-quoted, $* and $@ are the same.
 
-EXAMPLE:
+# EXAMPLE:
 #!/bin/bash
 # Define a function with multiple parameters
 add_numbers() {
@@ -76,11 +79,67 @@ add_numbers 100 200
 - The local keyword is used to make the variables num1, num2, and sum local to the function.
 - The function is called with different pairs of numbers.
 
-OUTPUT:
+# OUTPUT:
 The sum of 3 and 5 is: 8
 The sum of 10 and 20 is: 30
 The sum of 100 and 200 is: 300
 ******************************************************************************************************************************************************************************
+Returning Values from Functions
+******************************************************************************************************************************************************************************
+In Bash, you can use the return statement to return an integer value from a function. To return strings or more complex data, you can use echo and command substitution.
+
+# EXAMPLE:
+#!/bin/bash
+# Define a function that returns an integer value
+get_square() {
+    local num=$1
+    local square=$((num * num))
+    return $square
+}
+# Call the function and capture the return value
+get_square 4
+square=$?
+
+echo "The square of 4 is: $square"
+
+EXPLANATION:
+- The function get_square calculates the square of the input number and returns it.
+- The special variable $? captures the return value of the last executed command, which in this case is the return value of the function.
+  Note: The return statement only works with integer values between 0 and 255. For returning larger numbers or strings, use echo.
+*****************************************************************************************************************************************
+# EXAMPLE:
+#!/bin/bash
+# Function to check if a file exists
+check_file_exists() {
+    local file=$1
+    if [[ -f "$file" ]]; then
+        return 0  # Return 0 (success) if the file exists
+    else
+        return 1  # Return 1 (failure) if the file does not exist
+    fi
+}
+
+# Call the function and check the return status
+file_to_check="example.txt"
+check_file_exists "$file_to_check"
+if [[ $? -eq 0 ]]; then
+    echo "The file '$file_to_check' exists."
+else
+    echo "The file '$file_to_check' does not exist."
+fi
+
+EXPLANATION:
+- check_file_exists(): Takes a filename as an argument and checks if it exists. Uses return to set the exit status of the function (0 for success, 1 for failure). 
+- Calls the check_file_exists function with a filename. Checks the return status ($?) of the function to determine if the file exists. 
+- Based on the return status, prints a message indicating whether the file exists. 
+- The script is not built to search every directory, the output will depend on whether example.txt exists in the current directory.
+
+
+
+
+
+
+
 
 Reference
 https://linuxize.com/post/bash-functions/
