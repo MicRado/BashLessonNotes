@@ -1,3 +1,43 @@
+****************************************************************************************************************************************************************************
+Using Quotes
+****************************************************************************************************************************************************************************
+In many languages, quotes are primarily used to denote string literals. In the shell paradigm, many constructs are interpreted as strings by default, so quotes play other important roles. Quotes demarcate the arguments of a command into units called "words", as well as modify the evaluation of their contents in numerous context-dependent ways. It is critical to understand how quoting affects the interpretation of code in a given context; it's something no one should avoid learning. Improper quoting is among the most common shell programming errors. Do not guess about quotes!
+
+cp $file $destination         # WRONG
+cp -- "$file" "$destination"  # RIGHT
+
+Types of quoting
+There are three standard types of quotes (or four if you count backslash escaping), and two nonstandard Bash extensions.
+
+Single quotes: 
+    '...' removes the special meaning of every character between the quotes. Everything inside single quotes becomes a literal string. The only character that you can't           safely enclose in single quotes is a single quote.
+
+Double quotes: 
+    "..." prevents some substitutions but allows others. Every substitution that begins with a dollar sign $ is performed, as is the legacy `...` (backtick) command               substitution. Backslash escaping is also performed. No word splitting or filename expansion is performed.
+
+Backticks: 
+    `...` is the legacy command substitution syntax; deprecated in favor of $(...) but still permitted for historical reasons. 
+
+Backslash: 
+    Putting \ in front of a metacharacter removes its special meaning. This works inside double quotes, or in the absence of quotes. It does not work inside single quotes.
+
+$'...': 
+    Contents are a single word with interpretation of backslash escape sequences such as \n for newline, \t for tab, and \xnn for bytes specified in hexadecimal. These may be     used to specify a text representation of arbitrary data. No current implementation supports a context where these are not interpreted as NUL-terminated C strings.
+
+You can mix the various types of quoting if you need to. For example, if you have one section of a string that has lots of special characters that you'd like to single-quote, and another section with a parameter expansion in it which must be double-quoted.
+
+$ foo=bar
+$ printf '%s\n' '!%$*&'"$foo"
+!%$*&bar
+****************************************************************************************************************************************************************************
+Expand argument lists
+****************************************************************************************************************************************************************************
+Double-quoting $@ or ${array[@]} has a special meaning. "$@" expands to a list of words, with each positional parameter's value being one word. Likewise, "${array[@]}" expands to a list of words, one per array element. When dealing with the positional parameters or with the contents of an array as a list of words, always use the double-quoted syntax.
+
+Double-quoting $* or ${array[*]} results in one word which is the concatenation of all the positional parameters (or array elements) with the first character of IFS between them. This is similar to the join function in some other languages, although the fact that you can only have a single join character can sometimes be a crippling limitation.
+
+
+------------------------------------------------------------------------------
 Error Handling:
 Using exit codes and trap for catching errors.
 Debugging:
