@@ -145,63 +145,194 @@ Variables
 - Some loops happen in subprocesses, so don’t be surprised when setting variabless does nothing after them. Use stdout and greping to communicate status.
 
 ****************************************************************************************************************************************************************************
-Variables
-****************************************************************************************************************************************************************************
-
 Substitution
+****************************************************************************************************************************************************************************
 Always use $(cmd) for command substitution (as opposed to backquotes)
-Prepend a command with \ to override alias/builtin lookup. E.g.:
+- $(command) - GOOD
+- `command` - BAD
 
-****************************************************************************************************************************************************************************
-Substitution
-****************************************************************************************************************************************************************************
+Aliases and builtins in Bash can sometimes override commands. To ensure you are using the actual command (and not an alias or builtin), you can prepend the command with a backslash (\).
+EXAMPLE:
+\ls  # This will bypass the alias and use the actual 'ls' command - GOOD
+alias ls='ls --color=auto'        -v
+ls  # This will use the alias      - BAD
 
+EXAMPLE:
+\time bash -c "dnf list installed | wc -l"
 
+SYNTAX:
+    \time 
+        ensures that the actual time command is used, not an alias or a built-in version
+    bash -c "dnf list installed | wc -l" 
+        runs the command dnf list installed | wc -l in a new Bash shell.
+    dnf list installed 
+        lists all installed packages.
+    | wc -l 
+        counts the number of lines in the output of the dnf command, giving the number of installed packages.
 ****************************************************************************************************************************************************************************
 Output and redirection
 ****************************************************************************************************************************************************************************
+For various reasons, printf is preferable to echo. printf gives more control over the output, it’s more portable and its behaviour is defined better.
+Print error messages on stderr. 
+error() {
+    printf "${red}!!! %s${reset}\\n" "${*}" 1>&2
+  }
 
+SYNTAX:
+    error() {
+        This defines a function named error.
+    ${red} and ${reset}
+        These are variables presumably containing ANSI escape codes for coloring text. The actual values of these variables are not shown, but typically, ${red} would set the         text color to red, and ${reset} would reset the text color back to default.
+    !!!
+        This is a prefix indicating an error message
+    %s 
+        This is a format specifier in printf that will be replaced by the string passed to the function.
+    ${*}
+        This expands to all the arguments passed to the function.
+    \\n 
+        This is a newline character
+    1> 
+        This redirects the standard output (stdout), which is file descriptor 1.
+    &2
+        This indicates that stdout should be redirected to the same location as stderr, which is file descriptor 2.
 
+So, the printf statement constructs an error message with a red prefix and resets the text color afterward, followed by a newline.
+
+When combining a sudo command with redirection, it’s important to realize that the root permissions only apply to the command, not to the part after the redirection operator. An example where a script needs to write to a file that’s only writeable as root:
+# Will Not Work:
+  sudo printf "..." > /root/some_file
+
+# Will Work:
+  printf "..." | sudo tee /root/some_file > /dev/null
 ****************************************************************************************************************************************************************************
 Functions
 ****************************************************************************************************************************************************************************
+Bash can be hard to read and interpret. Using functions can greatly improve readability. Principles from Clean Code apply here.
+    - Apply the Single Responsibility Principle: a function does one thing.
+    - Don’t mix levels of abstraction
+    - Describe the usage of each function: number of arguments, return value, output
+    - Declare variables with a meaningful name for positional parameters of functions
 
+foo() {
+    local first_arg="${1}"
+    local second_arg="${2}"
+    [...]
+}
+    # `foo()` and `bar` as a function name in examples and tutorials is a long-standing convention in programming. It serves as a placeholder name when the actual function        #  name is not important to the explanation or when the example is intended to be generic.
+
+Create functions with a meaningful name for complex tests
+EXAMPLE:
+# Don't do this
+  if [ "$#" -ge "1" ] && [ "$1" = '-h' ] || [ "$1" = '--help' ] || [ "$1" = "-?" ]; then
+    usage
+    exit 0
+  fi
+
+  # Do this
+  help_wanted() {
+    [ "$#" -ge "1" ] && [ "$1" = '-h' ] || [ "$1" = '--help' ] || [ "$1" = "-?" ]
+  }
+
+  if help_wanted "$@"; then
+    usage
+    exit 0
+  fi
+
+SYNTAX:
+    help_wanted() {
+        This defines a function named help_wanted.
+    [ "$#" -ge "1" ]
+        This checks if there is at least one argument provided to the script ("$#" is the number of arguments).
+    [ "$1" = '-h' ]
+        This checks if the first argument ("$1") is -h.
+    [ "$1" = '--help' ]
+        This checks if the first argument ("$1") is --help.
+    [ "$1" = "-?" ]
+        This checks if the first argument ("$1") is -?.
+Logical Operators:
+    The && and || operators are used to combine these conditions:
+    && (logical AND) 
+        ensures that if there is at least one argument, it must be one of the help options.
+    || (logical OR) 
+        ensures that any of the specified help options will trigger the condition.
+Using the Function:    
+    help_wanted "$@"
+        Calls the help_wanted function with all the arguments passed to the script ("$@" represents all the script's arguments).
+    Action
+        If the help_wanted function returns true (i.e., the script was called with a help option), the script calls the usage function and then exits.
 
 ****************************************************************************************************************************************************************************
 Cleanup code
 ****************************************************************************************************************************************************************************
+An idiom for tasks that need to be done before the script ends (e.g. removing temporary files, etc.). The exit status of the script is the status of the last statement before the finish function.
 
+EXAMPLE:
+    finish() {
+      result=$?
+      echo "Cleaning up before exit..."
+      # Remove temporary file if it exists
+      [ -f /tmp/tempfile ] && rm -f /tmp/tempfile
+      exit ${result}
+    }
+    # Set up trap to call finish on exit or error
+    trap finish EXIT ERR
+    # Main script logic
+    echo "Creating temporary file..."
+    touch /tmp/tempfile
+    # Simulate some operations
+    echo "Performing operations..."
+    # An intentional command that fails
+    ls /nonexistentfile
+    echo "This line will not be reached if the script exits on error."
 
+SYNTAX:
+finish() {
+This defines a function named finish.
+    result=$?
+        This line captures the exit status of the last executed command before the finish function is called. In Bash, $? holds the exit status of the most recently executed          command. Storing this value in the result variable ensures that the original exit status of the script is preserved and can be used later.
+    # Your cleanup code here:
+        This is a placeholder comment where you can insert any necessary cleanup operations. For example, you might want to remove temporary files, close network connections, 
+        or perform other resource management tasks.
+
+    [ -f /tmp/tempfile ]
+        This is a test expression enclosed in square brackets, which is a synonym for the test command.
+    -f 
+        is a test operator that checks if a file exists and is a regular file (not a directory or other special type of file).
+    /tmp/tempfile 
+        is the file path being checked.
+        The expression [ -f /tmp/tempfile ] returns true (exit status 0) if the file /tmp/tempfile exists and is a regular file, and false (non-zero exit status) otherwise.
+    &&:
+        This is a logical AND operator. In Bash, && is used to execute the command following it only if the preceding command (or test) succeeds (returns a true value).
+    rm -f /tmp/tempfile:
+        rm is the command to remove (delete) files.
+        -f is an option for rm that stands for "force." It forces the removal of the file without prompting for confirmation, even if the file has write-protection, and it            suppresses error messages if the file does not exist.    
+    exit ${result}
+        This line exits the script with the original exit status that was captured in the result variable. By using exit ${result}, the script ensures that the exit status            reflects the outcome of the script's main operations rather than the status of the cleanup process.
+
+- The trap command ensures that the finish function is called whenever the script exits or an error occurs.
+- When the script tries to list a non-existent file (ls /nonexistentfile), it triggers an ERR event.
+- The finish function is called, which captures the exit status of the failed ls command and performs cleanup (removing the temporary file).
+- The script exits with the same status as the failed ls command, ensuring that the exit status accurately reflects the script's outcome.
+
+Source: Aaron Maxwell, How “Exit Traps” can make your Bash scripts way more robust and reliable.
+http://redsymbol.net/articles/bash-exit-traps/
 ****************************************************************************************************************************************************************************
 Writing robust scripts and debugging
 ****************************************************************************************************************************************************************************
+Bash is not very easy to debug. There’s no built-in debugger like you have with other programming languages. By default, undefined variables are interpreted as empty strings, which can cause problems further down the line. A few tips that may help:
+    - Always check for syntax errors by running the script with bash -n myscript.sh
+      -n: This option tells Bash to perform a syntax check only. It parses the script and looks for syntax errors but does not execute any of the commands in the script.
+    - Use ShellCheck and fix all warnings. This is a static code analyzer that can find a lot of common bugs in shell scripts. Integrate ShellCheck in your text editor (e.g.        Syntastic plugin in Vim)
+    - Abort the script on errors and undbound variables. Put the following code at the beginning of each script.    
+            set -o errexit   # abort on nonzero exitstatus
+            set -o nounset   # abort on unbound variable
+            set -o pipefail  # don't hide errors within pipes
+            
+A shorter version is shown below, but writing it out makes the script more readable.
+            set -euo pipefail
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Use Bash’s debug output feature. This will print each statement after applying all forms of substitution (parameter/command substitution, brace expansion, globbing, etc.)
+    - Run the script with bash -x myscript.sh
+    - Put set -x at the top of the script
+    - If you only want debug output in a specific section of the script, put set -x before and set +x after the section.
+Write lots of log messages to stdout or stderr so it’s easier to drill down to what part of the script contains problematic code.
