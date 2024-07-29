@@ -90,25 +90,91 @@ $ foo=bar
 $ printf '%s\n' '!%$*&'"$foo"
 !%$*&bar
 
+****************************************************************************************************************************************************************************
+General
+****************************************************************************************************************************************************************************
+Always use long parameter notation when available. This makes the script more readable, especially for lesser known/used commands that you don’t remember all the options for.
+
+EXAMPLE:
+ # Avoid:
+  rm -rf -- "${dir}"
+# Good:
+  rm --recursive --force -- "${dir}"
+
+Don’t use:
+cd "${foo}"
+[...]
+cd ..
+but
+(
+  cd "${foo}"
+  [...]
+)
+
+***pushd*** Command saves your current directory in a stack and then changes to a new directory. 
+Save the Current Directory: The current directory is saved in a stack.
+Change to a New Directory: You specify a new directory to change to.
+EXAMPLE:
+    pushd /path/to/new/directory
+After running this command, you are now in /path/to/new/directory, and your previous directory has been saved.
+
+***popd*** Command
+The popd command removes the top directory from the stack and changes back to it. This lets you return to the directory you were in before using pushd.
+Use nohup foo | cat & if foo must be started from a terminal and run in the background.
+cd ~ # (home) directory
+pushd /usr/local              # Add (home) to stack and switch to /usr/local
+echo "Now in $(pwd)"          # Outputs: Now in /usr/local
+pushd /tmp                    # Add /usr/local to stack and switch to /tmp
+echo "Now in $(pwd)"          # Outputs: Now in /tmp
+popd                          # Pop the directory stack, returning to /usr/local
+echo "Back to $(pwd)"         # Outputs: Back to /usr/local
+popd                          # Pop the directory stack again, returning to home
+echo "Back to $(pwd)"         # Outputs: Back to ~
+
+****************************************************************************************************************************************************************************
+Variables
+****************************************************************************************************************************************************************************
+- Prefer local variables within functions over global variables
+- If you need global variables, make them readonly
+- Variables should always be referred to in the ${var} form (as opposed to $var).
+- Variables should always be quoted, especially if their value may contain a whitespace or separator character: "${var}"
+- Capitalization:
+        - Environment (exported) variables: ${ALL_CAPS}
+        - Local variables: ${lower_case}
+- Positional parameters of the script should be checked, those of functions should not
+- Some loops happen in subprocesses, so don’t be surprised when setting variabless does nothing after them. Use stdout and greping to communicate status.
+
+****************************************************************************************************************************************************************************
+Variables
+****************************************************************************************************************************************************************************
+
+Substitution
+Always use $(cmd) for command substitution (as opposed to backquotes)
+Prepend a command with \ to override alias/builtin lookup. E.g.:
+
+****************************************************************************************************************************************************************************
+Substitution
+****************************************************************************************************************************************************************************
 
 
+****************************************************************************************************************************************************************************
+Output and redirection
+****************************************************************************************************************************************************************************
 
 
+****************************************************************************************************************************************************************************
+Functions
+****************************************************************************************************************************************************************************
 
 
+****************************************************************************************************************************************************************************
+Cleanup code
+****************************************************************************************************************************************************************************
 
 
-
-
-
-
-
-
-
-
-
-
-
+****************************************************************************************************************************************************************************
+Writing robust scripts and debugging
+****************************************************************************************************************************************************************************
 
 
 
