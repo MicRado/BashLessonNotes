@@ -1,0 +1,242 @@
+****************************************************************************************************************************************************************************
+awk
+****************************************************************************************************************************************************************************
+awk is a versatile and powerful programming language designed for text processing and data extraction. It is named after its authors: Alfred Aho, Peter Weinberger, and Brian Kernighan. 
+The awk command is used to search, filter, and manipulate text based on specified patterns. It is particularly useful for working with structured data, such as CSV files or system logs.
+
+On most systems 
+- the command is awk if using the old version 
+- nawk if using the new version
+- gawk if using the GNU version. 
+
+On SCO UNIX, the new version is spelled awk, and on Linux, the GNU version is spelled gawk.
+
+SYNOPSIS
+       gawk [ POSIX or GNU style options ] -f program-file [ -- ] file ...
+       gawk [ POSIX or GNU style options ] [ -- ] program-text file ...
+
+       awk 'pattern { action }' filename
+
+pattern:  This is an expression that defines when the action should be performed. If omitted, the action is performed for every line.
+action:   This specifies what to do when a line matches the pattern. It is enclosed in curly braces {}.
+filename: The name of the file to process. If omitted, awk reads from standard input
+
+****************************************************************************************************************************************************************************
+Field Variables
+****************************************************************************************************************************************************************************
+In awk, each line of input is treated as a record, and each word in the line is treated as a field. Fields are accessed using the $ symbol:
+
+$0: Represents the entire line.
+$1, $2, ...: Represent the first, second, etc., fields.
+
+****************************************************************************************************************************************************************************
+Common Uses of awk
+****************************************************************************************************************************************************************************
+Printing Specific Fields
+One of the simplest uses of awk is to print specific fields from each line:
+    awk '{ print $1, $3 }' filename
+
+Pattern Matching
+awk can filter lines based on patterns. For example, to print lines containing the word "error":
+    awk '/error/ { print $0 }' filename
+
+Calculations and Data Manipulation
+awk can perform arithmetic operations on fields. For example, to calculate and print the sum of the second and third fields:
+    awk '{ sum = $2 + $3; print sum }' filename
+
+Conditional Statements
+awk supports conditional statements, making it useful for complex filtering:
+   awk '$3 > 100 { print $1, $3 }' filename
+ 
+Built-in Variables
+awk provides several built-in variables for use within scripts:
+  NR: The current record number (line number).
+  NF: The number of fields in the current record.
+  FS: The input field separator (default is whitespace).
+  OFS: The output field separator (default is a space).
+    awk '{ print NR, $0 }' filename
+
+Changing Field Separators
+You can change the field separator using the -F option:
+    awk -F, '{ print $1, $2 }' filename.csv
+
+
+****************************************************************************************************************************************************************************
+Scripting with awk
+****************************************************************************************************************************************************************************
+awk can also be used to write scripts, allowing for more complex data processing:
+    #!/usr/bin/awk -f
+    
+    BEGIN {
+        print "Processing data"
+    }
+    
+    {
+        total += $3
+        count++
+    }
+    
+    END {
+        print "Average:", total/count
+    }
+
+****************************************************************************************************************************************************************************
+Extracting Usernames and User IDs
+****************************************************************************************************************************************************************************
+This command extracts usernames and user IDs from the system's password file.
+    getent passwd | awk -F: '{ print $1, $3 }'
+
+
+****************************************************************************************************************************************************************************
+Summing a Column of Numbers
+****************************************************************************************************************************************************************************
+This sums the numbers in the second column of data.txt.
+    awk '{ sum += $2 } END { print "Total:", sum }' data.txt
+
+****************************************************************************************************************************************************************************
+MY EXAMPLE
+****************************************************************************************************************************************************************************
+Looking at user account information is very common. 
+Best parctices states if we are going to do something twice, make it a script.
+
+Looking at the contents of /etc/passwd: 
+ - Readability could be improved. 
+ - Do I need to look at the service accounts or is my normal objective revolving around user created accounts
+
+      root:x:0:0:root:/root:/usr/bin/zsh
+      daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+      bin:x:2:2:bin:/bin:/usr/sbin/nologin
+      sys:x:3:3:sys:/dev:/usr/sbin/nologin
+      sync:x:4:65534:sync:/bin:/bin/sync
+
+A quick break down of each field:
+test1 : x : 1000 : 1000 : Test Test : /home/test : /bin/bash
+  1      2    3      4      5            6            7
+1. The username (test1). A unique string with a maximum length of 32 characters.
+2. x. The encrypted password stored in the /etc/shadow file. 
+3. UID (1000). The user ID (UID) is a unique number assigned to each user by the operating system.
+4. GID (1000). The Group ID (GID) refers to the user's primary group. The primary group has the same name as the user. Secondary groups are listed in the /etc/groups file.
+5. GECOS (Test Test). Represents the User ID Info (GECOS), the comment field containing additional information about the user. For example, the user's full name, phone   
+   number, and other contact details. 
+6. The home directory (/home/sara). The absolute path to the directory where users are placed when they log in. It contains the user's files and configurations.
+7. The default shell (bin/bash). The user's default shell that starts when the user logs into the system. 
+
+EXAMPLE:
+echo -e "Username\tPassword\tUID\tGID\tGECOS\tHome Dir\tDefault Shell"
+awk -F: '{printf "%-10s\t%-10s\t%-5s\t%-5s\t%-20s\t%-15s\t%-15s\n", $1, $2, $3, $4, $5, $6, $7}' /etc/passwd | column -t -s $'\t'
+
+SYNTAX:
+echo -e "Username\tPassword\tUID\tGID\tGECOS\tHome Dir\tDefault Shell"
+    This prints the header line with column names.
+    The -e flag enables interpretation of backslash escapes, allowing \t to represent tabs for spacing.
+
+awk -F:
+    This invokes awk, setting the field separator to : , which is the default delimiter in the /etc/passwd file.
+printf: 
+    A function in awk for formatted output.
+%-10s:
+    %-: Left-align the text.
+    10: Minimum width of 10 characters.
+    s: Treat the argument as a string.
+
+$1, $2, $3, $4, $5, $6, $7: 
+    These are the fields from the /etc/passwd file.
+$1: Username
+$2: Password (usually an 'x' because modern systems store passwords in /etc/shadow for security)
+$3: User ID (UID)
+$4: Group ID (GID)
+$5: GECOS field (User's full name or other comments)
+$6: Home directory
+$7: Default shell
+\t: Tabs between columns.
+\n: New line after each record.
+| column -t -s $'\t':
+
+This pipes the output of the awk command to the column command.
+-t: Aligns the output into columns.
+-s $'\t': Specifies the tab character as the column delimiter.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
