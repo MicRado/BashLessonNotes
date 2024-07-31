@@ -123,6 +123,18 @@ OR
     # Print a greeting
     echo "Hello, World!"
 
+This works even though shell scripts do not have a built-in multi-line comment syntax like some other programming languages.
+    : << 'COMMENTED_OUT':
+    : is called a no operation (no-op) command in the shell, which effectively does nothing and always returns a successful exit status.
+    << is a "Here Document" (often abbreviated as "heredoc") operator that redirects a block of text to the input of a command.
+    'COMMENTED_OUT' is a delimiter that marks the beginning and the end of the heredoc. Everything between : << 'COMMENTED_OUT' and COMMENTED_OUT is treated as input to the      : command.
+
+This is because of the heredoc syntax (Not to be confused with a single < which is an input redirect, which is used to take input from a file. The heredoc  << 'DELIMITER' allows you to specify a custom delimiter string, and everything between this opening delimiter and the matching closing delimiter on a line by itself is treated as input.
+
+The delimiters 'COMMENTED_OUT' are purely arbitrary and are there for readability and convenience. They can be replaced with any other string, ei - 'IGNORE', 'SKIP', or anything else that makes sense in the context of your script…. Again only requirement is that the opening and closing delimiters match.
+
+So simply for multi line comments:
+The colon (:) or No-Op ignores anything  is forwarded it from the << ‘heredoc’ - that sits between the  chosen delimiters.
 
 
 
