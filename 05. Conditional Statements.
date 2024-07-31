@@ -9,10 +9,10 @@ if Statement
 ****************************************************************************************************************************************************************************
 The if statement is used to execute a block of code if a specified condition is true.
 #!/bin/bash
-n=`ls -1 | wc -l` 
-if [ $n -lt 10 ]
-then 
-printf "There are less than ten files here \n" 
+totalcount=$(ls -1 | wc -l)
+# Always quote variables to prevent word splitting and globbing issues
+if [ "{$totalcount}" -lt 10 ]; then
+  printf "There are less than ten items here\n"
 fi
 
 The code here first assigns the number of files in the current directory to a variable (n). It then uses the test operator -lt to test if the number count is less than ten. If the test condition is true, the command ([ $n -lt 10 ]) will exit with a status of 0, returning an exit code of 0. Then it displays a message informing the user that there are less than ten files in this particular directory.
@@ -22,8 +22,8 @@ if-Else Statements:
 ****************************************************************************************************************************************************************************
 The if-else statement allows you to execute one block of code if the condition is true and another block if the condition is false.
 #!/bin/bash
-n=`ls -1 | wc -l`
-if [ $n -lt 10 ]
+totalcount=$(ls -1 | wc -l)
+if [ "{$totalcount}" -lt 10 ]
 then
 printf "There are less than ten files here \n"
 else
@@ -37,11 +37,11 @@ if-elif-else Statement:
 ****************************************************************************************************************************************************************************
 The if-elif-else statement allows you to check multiple conditions. If the first condition is false, it checks the next condition, and so on.
 #!/bin/bash
-n=`ls -1 | wc -l`
-if [ $n -lt 10 ]
+totalcount=$(ls -1 | wc -l)
+if [ "{$totalcount}" -lt 10 ]
 then
 printf "There are less than ten files here \n"
-elif [ $n -lt 15 ]
+elif [ "{$totalcount}" -lt 15 ]
 then printf "There are less than fifteen files here \n";
 else
 printf "There are more than fifteen files here \n";
@@ -54,11 +54,11 @@ Nested If Statement:
 ****************************************************************************************************************************************************************************
 If you want to add more refinement to your if and elif conditionals, you can use a nested or embedded if statement. A nested if lets you perform an additional check after a condition is met by an if statement. 
 #!/bin/bash
-n=`ls -1 | wc -l`
-if [ $n -lt 10 ]
+totalcount=$(ls -1 | wc -l)
+if [ "{$totalcount}" -lt 10 ]
 then
   printf "There are less than ten files here \n";
-  if [ $n -gt 5 ]
+  if [ "{$totalcount}" -gt 5 ]
   then
     printf "There are more than five files here \n";
   else
@@ -74,10 +74,10 @@ case Statement:
 The case statement is used for multi-way branching based on pattern matching. It's useful when you have multiple conditions to check.They work similarly to if-elif-else statements, but when employed correctly, they can help produce cleaner code.
 #!/bin/bash
 
-n=`ls -1 | wc -l` 
-echo $n
+totalcount=$(ls -1 | wc -l) 
+echo "{$totalcount}"
 
-case $n in 
+case "{$totalcount}" in 
 0) printf "There are no files here \n";; 
 1) printf "There is one \n";;
 2) printf "There are two files here \n";; 
