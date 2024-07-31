@@ -11,7 +11,7 @@ The if statement is used to execute a block of code if a specified condition is 
 #!/bin/bash
 totalcount=$(ls -1 | wc -l)
 # Always quote variables to prevent word splitting and globbing issues
-if [ "{$totalcount}" -lt 10 ]; then
+if [ "$totalcount" -lt 10 ]; then
   printf "There are less than ten items here\n"
 fi
 
@@ -23,7 +23,7 @@ if-Else Statements:
 The if-else statement allows you to execute one block of code if the condition is true and another block if the condition is false.
 #!/bin/bash
 totalcount=$(ls -1 | wc -l)
-if [ "{$totalcount}" -lt 10 ]
+if [ "$totalcount" -lt 10 ]
 then
 printf "There are less than ten files here \n"
 else
@@ -38,10 +38,10 @@ if-elif-else Statement:
 The if-elif-else statement allows you to check multiple conditions. If the first condition is false, it checks the next condition, and so on.
 #!/bin/bash
 totalcount=$(ls -1 | wc -l)
-if [ "{$totalcount}" -lt 10 ]
+if [ "$totalcount" -lt 10 ]
 then
 printf "There are less than ten files here \n"
-elif [ "{$totalcount}" -lt 15 ]
+elif [ "$totalcount" -lt 15 ]
 then printf "There are less than fifteen files here \n";
 else
 printf "There are more than fifteen files here \n";
@@ -55,10 +55,10 @@ Nested If Statement:
 If you want to add more refinement to your if and elif conditionals, you can use a nested or embedded if statement. A nested if lets you perform an additional check after a condition is met by an if statement. 
 #!/bin/bash
 totalcount=$(ls -1 | wc -l)
-if [ "{$totalcount}" -lt 10 ]
+if [ "$totalcount" -lt 10 ]
 then
   printf "There are less than ten files here \n";
-  if [ "{$totalcount}" -gt 5 ]
+  if [ "$totalcount" -gt 5 ]
   then
     printf "There are more than five files here \n";
   else
@@ -75,9 +75,9 @@ The case statement is used for multi-way branching based on pattern matching. It
 #!/bin/bash
 
 totalcount=$(ls -1 | wc -l) 
-echo "{$totalcount}"
+echo "$totalcount"
 
-case "{$totalcount}" in 
+case "$totalcount" in 
 0) printf "There are no files here \n";; 
 1) printf "There is one \n";;
 2) printf "There are two files here \n";; 
