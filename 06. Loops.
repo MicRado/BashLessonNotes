@@ -43,9 +43,10 @@ SYNTAX:
         This marks the end of the for loop.
 
 #!/bin/bash
-for user in $(cut -d: -f1 /etc/passwd); do
-    echo "User: $user"
+for user in $(awk -F: '{ print $1 }' /etc/passwd); do
+  printf "User: %s\n" "$user"
 done
+
 
 ****************************************************************************************************************************************************************************
 While Loops:
@@ -63,9 +64,9 @@ The while loop will continue to run until it returns the condition 'false' (an e
 SYNTAX:
     counter=1:
         This assigns the numerical value of 1 to the parameter 'counter'.
-    while [ $counter -le 5 ];:
+    while [ "$counter" -le 5 ]; do
         As long as the condition of the variable $counter is less than or equal to 5 the loop continues.
-    echo "Counter: $counter":
+   printf "Counter: %d\n" "$counter"
         This is the body of the for loop. For each iteration, it prints "Counter: " followed by the number stored in the variable counter
     ((counter++)):
         This increments the counter variable by 1. This can be written in many ways - 
@@ -84,8 +85,9 @@ SYNTAX:
 counter=1
 
 # Loop while the counter is less than or equal to 5
-while [ $counter -le 5 ]; do
-    echo "Counter: $counter"
+while [ "$counter" -le 5 ]; do
+    # Use printf for more consistent output formatting
+    printf "Counter: %d\n" "$counter"
     # Increment the counter by 1
     ((counter++))
 done
