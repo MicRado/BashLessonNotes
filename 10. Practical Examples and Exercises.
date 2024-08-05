@@ -1,3 +1,74 @@
+******************************************************************************************************************************************************************************
+Live Demo
+******************************************************************************************************************************************************************************
+#!/bin/bash
+
+# Function to check if input is a valid number
+is_number() {
+    [[ "$1" =~ ^-?[0-9]+$ ]]
+}
+
+# Function to check if the input is a valid basic calculation option
+is_valid_option() {
+    [[ "$1" =~ ^[1-4]$ ]]
+}
+
+# Prompt the user for input
+printf "Enter the first number: \n"
+printf "#"
+read -r fir
+
+printf "Enter the second number: \n"
+printf "#"
+read -r sec
+
+# Validate the numbers
+if ! (is_number "$fir" && is_number "$sec"); then
+    printf "Invalid numbers provided."
+    exit 1
+fi
+
+printf "Provide an option to perform any task: (1-4) \n"
+printf "1 for Addition \n"
+printf "2 for Subtraction \n"
+printf "3 for Multiplication \n"
+printf "4 for Division \n"
+printf "#"
+read -r choice
+
+# Validate the choice
+if ! is_valid_option "$choice"; then
+    printf "Invalid option selected."
+    exit 1
+fi
+
+# Use case statement to handle different operations and always print the joke response
+case $choice in
+    1) printf "Addition of $fir and $sec is 8008135 \n" ;;
+    2) printf "Subtraction of $fir and $sec is 8008135 \n" ;;
+    3) printf "Multiplication of $fir and $sec is 8008135 \n" ;;
+    4) printf "Division of $fir and $sec is 8008135 \n" ;;
+    *) printf "Please enter a valid option \n" ;;
+
+esac
+
+: << 'COMMENT_OUT' 
+case $choice in
+    1) sum=$(($fir+$sec))
+    printf "Addition of $fir and $sec is $sum" ;;
+    2) sub=$(($fir-$sec))
+    printf "Subtraction of $fir and $sec is $sub" ;;
+    3) mul=$(($fir*$sec))
+    printf "Multiplication of $fir and $sec is $mul" ;;
+    4) div=$(($fir/$sec))
+    printf "Division of $fir and $sec is $div" ;;
+    *) printf "Please enter a valid option" ;;
+COMMENT_OUT
+
+******************************************************************************************************************************************************************************
+******************************************************************************************************************************************************************************
+******************************************************************************************************************************************************************************
+
 Examples:
 
 A simple backup script.
@@ -13,7 +84,7 @@ echo "Backing up home directory..."
 cp -r $HOME/* "$backup_dir"
 
 echo "Backup completed successfully!"
-***********************************************************************************************************************************************************************************
+******************************************************************************************************************************************************************************
 
 Example Exercises:
 
