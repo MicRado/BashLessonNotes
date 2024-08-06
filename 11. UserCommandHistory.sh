@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Function to print a section with a header and content
+print_section() {
+    local title=$1
+    local content=$2
+    printf "**************************************************************************************************************************************************** \n"
+    printf "%s: \n" "$title"
+    printf "**************************************************************************************************************************************************** \n"
+    printf "%s\n" "$content"
+    printf "\n"
+}
+
+# Get the list of users with UID >= 1000 and not "nobody"
+users=$(getent passwd | awk -F: '$3 >= 1000 && $1 != "nobody" { print $1 }')
+
+# Iterate over each user in the filtered list
+for user in $users; do
+    # Define the user's home directory
+    home_dir=$(getent passwd "$user" | awk -F: '{print $6}')
+
+    # Collect information from various files
+    bash_history=$( [ -f "$home_dir/.bash_history" ] && cat "$home_dir/.bash_history" || printf "Not found" )
+    bash_logout=$( [ -f "$home_dir/.bash_logout" ] && cat "$home_dir/.bash_logout" || printf "Not found" )
+    bash_rc=$( [ -f "$home_dir/.bashrc" ] && cat "$home_dir/.bashrc" || printf "Not found" )
+    profile=$( [ -f "$home_dir/.profile" ] && cat "$home_dir/.profile" || printf "Not found" )
+    python_history=$( [ -f "$home_dir/.python_history" ] && cat "$home_dir/.python_history" || printf "Not found" )
+    zsh_history=$( [ -f "$home_dir/.zsh_history" ] && cat "$home_dir/.zsh_history" || printf "Not found" )
+    zsh_rc=$( [ -f "$home_dir/.zshrc" ] && cat "$home_dir/.zshrc" || printf "Not found" )
+
+    # Write the gathered information to a file
+    output_file="/home/kali/Desktop/UserCommandHistory.txt"
+    {
+        print_section "Bash History" "$bash_history"
+        print_section "Bash Logout" "$bash_logout"
+        print_section "Bash RC" "$bash_rc"
+        print_section "Profile" "$profile"
+        print_section "Python History" "$python_history"
+        print_section "Zsh History" "$zsh_history"
+        print_section "Zsh RC" "$zsh_rc"
+    } > "$output_file"
+
+    printf "Results saved to %s\n" "$output_file"
+done
