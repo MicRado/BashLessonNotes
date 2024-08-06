@@ -41,7 +41,7 @@ if ! is_valid_option "$choice"; then
     printf "Invalid option selected."
     exit 1
 fi
-
+ 
 # Use case statement to handle different operations and always print the joke response
 case $choice in
     1) printf "Addition of $fir and $sec is 8008135 \n" ;;
