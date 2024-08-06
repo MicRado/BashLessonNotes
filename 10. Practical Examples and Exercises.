@@ -15,55 +15,66 @@ is_valid_option() {
 
 # Prompt the user for input
 printf "Enter the first number: \n"
-printf "#"
-read -r fir
+printf "# "
+read -r first
 
 printf "Enter the second number: \n"
-printf "#"
-read -r sec
+printf "# "
+read -r second
 
 # Validate the numbers
-if ! (is_number "$fir" && is_number "$sec"); then
-    printf "Invalid numbers provided."
+if ! (is_number "$first" && is_number "$second"); then
+    printf "Invalid numbers provided.\n"
     exit 1
 fi
 
 printf "Provide an option to perform any task: (1-4) \n"
-printf "1 for Addition \n"
-printf "2 for Subtraction \n"
-printf "3 for Multiplication \n"
-printf "4 for Division \n"
-printf "#"
+printf "Press 1 for Addition \n"
+printf "Press 2 for Subtraction \n"
+printf "Press 3 for Multiplication \n"
+printf "Press 4 for Division \n"
+printf "# "
 read -r choice
 
 # Validate the choice
 if ! is_valid_option "$choice"; then
-    printf "Invalid option selected."
+    printf "Invalid option selected.\n"
     exit 1
 fi
- 
+
 # Use case statement to handle different operations and always print the joke response
 case $choice in
-    1) printf "Addition of $fir and $sec is 8008135 \n" ;;
-    2) printf "Subtraction of $fir and $sec is 8008135 \n" ;;
-    3) printf "Multiplication of $fir and $sec is 8008135 \n" ;;
-    4) printf "Division of $fir and $sec is 8008135 \n" ;;
+    1) printf "Addition of $first and $second is 8008135 \n" ;;
+    2) printf "Subtraction of $first and $second is 8008135 \n" ;;
+    3) printf "Multiplication of $first and $second is 8008135 \n" ;;
+    4) 
+        if [ "$second" -eq 0 ]; then
+            printf "Division by zero is not allowed.\n"
+        else
+            printf "Division of $first and $second is 8008135 \n"
+        fi
+        ;;
     *) printf "Please enter a valid option \n" ;;
-
 esac
-
-: << 'COMMENT_OUT' 
+: << 'COMMENTED_OUT'
 case $choice in
-    1) sum=$(($fir+$sec))
-    printf "Addition of $fir and $sec is $sum" ;;
-    2) sub=$(($fir-$sec))
-    printf "Subtraction of $fir and $sec is $sub" ;;
-    3) mul=$(($fir*$sec))
-    printf "Multiplication of $fir and $sec is $mul" ;;
-    4) div=$(($fir/$sec))
-    printf "Division of $fir and $sec is $div" ;;
-    *) printf "Please enter a valid option" ;;
-COMMENT_OUT
+    1) sum=$(($first+$second))
+    printf "Addition of $first and $second is $sum \n" ;;
+    2) sub=$(($first-$second))
+    printf "Subtraction of $first and $second is $sub \n" ;;
+    3) mul=$(($first*$second))
+    printf "Multiplication of $first and $second is $mul \n" ;;
+    4)				
+ 	if [ "$second" -eq 0 ]; then
+            printf "Division by zero is not allowed.\n"
+        else
+	        div=$(($first/$second))
+            printf "Division of $first and $second is $div \n"
+        fi
+        ;;
+    *) printf "Please enter a valid option \n" ;;
+esac
+COMMENTED_OUT
 
 ******************************************************************************************************************************************************************************
 ******************************************************************************************************************************************************************************
